@@ -15,13 +15,24 @@ const getScenarioName = function() {
   return 'index';
 }
 
+const isLocal = new URLSearchParams(location.search.slice(1)).get('mode') === 'local';
+
 const SamplePreview = () => {
   const [data, setData] = useState({});
 
   async function init() {
     const scenarioName = getScenarioName();
-    const packages = getPackagesFromLocalStorage(scenarioName);
-    const projectSchema = getProjectSchemaFromLocalStorage(scenarioName);
+
+    let packages, projectSchema;
+
+    if (isLocal) {
+      packages = getPackagesFromLocalStorage(scenarioName);
+      projectSchema = getProjectSchemaFromLocalStorage(scenarioName);
+    } else {
+      const res = await fetch(`http://192.168.8.116/hackthon/dict?key=${scenarioName}`).then(r => r.json());
+      ({ packages, projectSchema } = JSON.parse(res?.data?.dictValue || '{}'));
+    }
+
     const { componentsMap: componentsMapArray, componentsTree } = projectSchema;
     const componentsMap: any = {};
     componentsMapArray.forEach((component: any) => {

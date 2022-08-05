@@ -146,17 +146,40 @@ export const loadIncrementalAssets = () => {
 };
 
 export const preview = (scenarioName: string = 'index') => {
-  saveSchema(scenarioName);
+  saveSchema(scenarioName, 'local');
   setTimeout(() => {
-    const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
-    window.open(`./preview.html${search}`);
+    const search = location.search ? `${location.search}&scenarioName=${scenarioName}&mode=local` : `?scenarioName=${scenarioName}&mode=local`;
+    window.open(`./dynamic.html${search}`);
   }, 500);
 };
 
-export const saveSchema = async (scenarioName: string = 'index') => {
-  setProjectSchemaToLocalStorage(scenarioName);
+export const publish = (scenarioName: string = 'index') => {
+  saveSchema(scenarioName);
+  setTimeout(() => {
+    const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
+    window.open(`./dynamic.html${search}`);
+  }, 500);
+};
 
+export const saveSchema = async (scenarioName: string = 'index', mode: string = 'online') => {
+  setProjectSchemaToLocalStorage(scenarioName);
   await setPackgesToLocalStorage(scenarioName);
+
+  const isPublish = mode === 'online';
+
+  if (isPublish) {
+    const projectSchema = project.exportSchema(TransformStage.Save);
+    const packages = await filterPackages(material.getAssets().packages);
+
+    const value = JSON.stringify({ projectSchema, packages });
+    
+
+    await fetch('http://192.168.8.116/hackthon/write', {
+      method: 'POST',
+      body: JSON.stringify({ key: scenarioName, value }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
   // window.localStorage.setItem(
   //   'projectSchema',
   //   JSON.stringify(project.exportSchema(TransformStage.Save))
@@ -166,7 +189,7 @@ export const saveSchema = async (scenarioName: string = 'index') => {
   //   'packages',
   //   JSON.stringify(packages)
   // );
-  Message.success('成功保存到本地');
+  Message.success(`${isPublish ? '发布' : '保存'}成功`);
 };
 
 export const resetSchema = async (scenarioName: string = 'index') => {

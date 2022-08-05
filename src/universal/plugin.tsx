@@ -32,6 +32,7 @@ import {
   saveSchema,
   resetSchema,
   preview,
+  publish,
 } from './utils';
 import assets from './assets.json'
 import { registerRefProp } from 'src/sample-plugins/set-ref-prop';
@@ -261,6 +262,30 @@ export default async function registerPlugins() {
   };
   previewSample.pluginName = 'previewSample';
   await plugins.register(previewSample);
+
+  const publishSample = (ctx: ILowCodePluginContext) => {
+    return {
+      name: 'publishSample',
+      async init() {
+        const { skeleton } = ctx;
+        skeleton.add({
+          name: 'publishSample',
+          area: 'topArea',
+          type: 'Widget',
+          props: {
+            align: 'right',
+          },
+          content: (
+            <Button type="primary" onClick={() => publish()}>
+              发布
+            </Button>
+          ),
+        });
+      },
+    };
+  };
+  publishSample.pluginName = 'publishSample';
+  await plugins.register(publishSample);
 
   const customSetter = (ctx: ILowCodePluginContext) => {
     return {
