@@ -1,4 +1,4 @@
-[
+const scenarios = [
   {
     "name": "index",
     "title": "综合场景"
@@ -36,3 +36,8 @@
     "title": "antd 高级组件 + formily 表单组件"
   }
 ]
+
+// const res = await fetch(`http://192.168.8.116/hackthon/list`).then(r => r.json());
+// console.log('=====res', res);
+
+export default scenarios;

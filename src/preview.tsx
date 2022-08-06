@@ -29,7 +29,7 @@ const SamplePreview = () => {
       packages = getPackagesFromLocalStorage(scenarioName);
       projectSchema = getProjectSchemaFromLocalStorage(scenarioName);
     } else {
-      const res = await fetch(`http://192.168.8.116/hackthon/dict?key=${scenarioName}`).then(r => r.json());
+      const res = await fetch(`http://192.168.8.116/hackthon/dict?key=lowcode_${scenarioName}`).then(r => r.json());
       ({ packages, projectSchema } = JSON.parse(res?.data?.dictValue || '{}'));
     }
 

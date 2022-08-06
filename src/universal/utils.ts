@@ -176,7 +176,7 @@ export const saveSchema = async (scenarioName: string = 'index', mode: string = 
 
     await fetch('http://192.168.8.116/hackthon/write', {
       method: 'POST',
-      body: JSON.stringify({ key: scenarioName, value }),
+      body: JSON.stringify({ key: `lowcode_${scenarioName}`, value }),
       headers: { 'Content-Type': 'application/json' },
     })
   }
@@ -299,7 +299,11 @@ export const getPageSchema = async (scenarioName: string = 'index') => {
     return pageSchema;
   }
 
-  return await request('./schema.json');
+  const res = await fetch(`http://192.168.8.116/hackthon/dict?key=lowcode_index`).then(r => r.json());
+  const schema = JSON.parse(res.data.dictValue).projectSchema.componentsTree[0];
+  return schema;
+
+  // return await request('./schema.json');
 };
 
 function request(
