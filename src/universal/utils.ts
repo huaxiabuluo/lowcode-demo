@@ -293,11 +293,11 @@ export const getPackagesFromLocalStorage = (scenarioName: string) => {
 }
 
 export const getPageSchema = async (scenarioName: string = 'index') => {
-  const pageSchema = getProjectSchemaFromLocalStorage(scenarioName).componentsTree?.[0]
+  // const pageSchema = getProjectSchemaFromLocalStorage(scenarioName).componentsTree?.[0]
 
-  if (pageSchema) {
-    return pageSchema;
-  }
+  // if (pageSchema) {
+  //   return pageSchema;
+  // }
 
   const res = await fetch(`http://192.168.8.116/hackthon/dict?key=lowcode_index`).then(r => r.json());
   const schema = JSON.parse(res.data.dictValue).projectSchema.componentsTree[0];
