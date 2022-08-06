@@ -146,17 +146,19 @@ export const loadIncrementalAssets = () => {
 };
 
 export const preview = (scenarioName: string = 'index') => {
+  scenarioName = new URLSearchParams(location.search.slice(1)).get('scenario') || 'lowcode_index'
   saveSchema(scenarioName, 'local');
   setTimeout(() => {
-    const search = location.search ? `${location.search}&scenarioName=${scenarioName}&mode=local` : `?scenarioName=${scenarioName}&mode=local`;
+    const search = `?scenarioName=${scenarioName}&mode=local`;
     window.open(`./dynamic.html${search}`);
   }, 500);
 };
 
 export const publish = (scenarioName: string = 'index') => {
+  scenarioName = new URLSearchParams(location.search.slice(1)).get('scenario') || 'lowcode_index'
   saveSchema(scenarioName);
   setTimeout(() => {
-    const search = location.search ? `${location.search}&scenarioName=${scenarioName}` : `?scenarioName=${scenarioName}`;
+    const search = `?scenarioName=${scenarioName}`;
     window.open(`./dynamic.html${search}`);
   }, 500);
 };
@@ -173,10 +175,9 @@ export const saveSchema = async (scenarioName: string = 'index', mode: string = 
 
     const value = JSON.stringify({ projectSchema, packages });
     
-
     await fetch('http://192.168.8.116/hackthon/write', {
       method: 'POST',
-      body: JSON.stringify({ key: `lowcode_${scenarioName}`, value }),
+      body: JSON.stringify({ key: scenarioName, value }),
       headers: { 'Content-Type': 'application/json' },
     })
   }
@@ -299,9 +300,10 @@ export const getPageSchema = async (scenarioName: string = 'index') => {
   //   return pageSchema;
   // }
 
-  const res = await fetch(`http://192.168.8.116/hackthon/dict?key=lowcode_index`).then(r => r.json());
-  const schema = JSON.parse(res.data.dictValue).projectSchema.componentsTree[0];
-  return schema;
+  const scenario = new URLSearchParams(location.search.slice(1)).get('scenario') || 'lowcode_index';
+  const res = await fetch(`http://192.168.8.116/hackthon/dict?key=${scenario}`).then(r => r.json());
+  const schema = JSON.parse(res.data.dictValue)?.projectSchema?.componentsTree?.[0];
+  return schema || await request('./schema.json');
 
   // return await request('./schema.json');
 };

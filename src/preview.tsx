@@ -10,7 +10,7 @@ import { getProjectSchemaFromLocalStorage, getPackagesFromLocalStorage } from '.
 
 const getScenarioName = function() {
   if (location.search) {
-   return new URLSearchParams(location.search.slice(1)).get('scenarioName') || 'index'
+   return new URLSearchParams(location.search.slice(1)).get('scenarioName') || 'lowcode_index'
   }
   return 'index';
 }
@@ -29,7 +29,7 @@ const SamplePreview = () => {
       packages = getPackagesFromLocalStorage(scenarioName);
       projectSchema = getProjectSchemaFromLocalStorage(scenarioName);
     } else {
-      const res = await fetch(`http://192.168.8.116/hackthon/dict?key=lowcode_${scenarioName}`).then(r => r.json());
+      const res = await fetch(`http://192.168.8.116/hackthon/dict?key=${scenarioName}`).then(r => r.json());
       ({ packages, projectSchema } = JSON.parse(res?.data?.dictValue || '{}'));
     }
 
